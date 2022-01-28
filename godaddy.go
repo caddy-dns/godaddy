@@ -3,11 +3,11 @@ package godaddy
 import (
 	"github.com/caddyserver/caddy/v2"
 	"github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
-	godaddyDNS "github.com/libdns/godaddy"
+	"github.com/libdns/godaddy"
 )
 
 // Provider wraps the provider implementation as a Caddy module.
-type Provider struct{ *godaddyDNS.Provider }
+type Provider struct{ *godaddy.Provider }
 
 func init() {
 	caddy.RegisterModule(Provider{})
@@ -17,8 +17,16 @@ func init() {
 func (Provider) CaddyModule() caddy.ModuleInfo {
 	return caddy.ModuleInfo{
 		ID:  "dns.providers.godaddy",
-		New: func() caddy.Module { return &Provider{new(godaddyDNS.Provider)} },
+		New: func() caddy.Module { return &Provider{new(godaddy.Provider)} },
 	}
+}
+
+// Before using the provider config, resolve placeholders in the API token.
+// Implements caddy.Provisioner.
+func (p *Provider) Provision(ctx caddy.Context) error {
+	repl := caddy.NewReplacer()
+	p.Provider.APIToken = repl.ReplaceAll(p.Provider.APIToken, "")
+	return nil
 }
 
 // UnmarshalCaddyfile sets up the DNS provider from Caddyfile tokens. Syntax:
@@ -28,10 +36,9 @@ func (Provider) CaddyModule() caddy.ModuleInfo {
 // }
 //
 func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
-	repl := caddy.NewReplacer()
 	for d.Next() {
 		if d.NextArg() {
-			p.Provider.APIToken = repl.ReplaceAll(d.Val(), "")
+			p.Provider.APIToken = d.Val()
 		}
 		if d.NextArg() {
 			return d.ArgErr()
@@ -42,7 +49,7 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 				if p.Provider.APIToken != "" {
 					return d.Err("API token already set")
 				}
-				p.Provider.APIToken = repl.ReplaceAll(d.Val(), "")
+				p.Provider.APIToken = d.Val()
 				if d.NextArg() {
 					return d.ArgErr()
 				}
@@ -57,5 +64,8 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	return nil
 }
 
-// Interface guard
-var _ caddyfile.Unmarshaler = (*Provider)(nil)
+// Interface guards
+var (
+	_ caddyfile.Unmarshaler = (*Provider)(nil)
+	_ caddy.Provisioner     = (*Provider)(nil)
+)
