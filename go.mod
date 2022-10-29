@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/caddyserver/caddy/v2 v2.4.6
-	github.com/libdns/godaddy v0.0.0-20220126161229-bb81e9eae213
+	github.com/libdns/godaddy v0.0.0-20221029040642-6024bc932fda
 )
 
 require (
