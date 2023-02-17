@@ -18,7 +18,7 @@ To use this module for the ACME DNS challenge, [configure the ACME issuer in you
 	"challenges": {
 		"dns": {
 			"provider": {
-				"name": "goddady",
+				"name": "godaddy",
 				"api_token": "YOUR_Godaddy_API_TOKEN" // key:secret
 			}
 		}
