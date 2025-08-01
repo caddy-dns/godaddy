@@ -19,7 +19,7 @@ To use this module for the ACME DNS challenge, [configure the ACME issuer in you
 		"dns": {
 			"provider": {
 				"name": "godaddy",
-				"api_token": "YOUR_Godaddy_API_TOKEN" // key:secret
+				"api_token": "YOUR_GODADDY_API_TOKEN"
 			}
 		}
 	}
@@ -29,12 +29,24 @@ To use this module for the ACME DNS challenge, [configure the ACME issuer in you
 or with the Caddyfile:
 
 ```
-tls {
-	dns godaddy {env.GODADDY_TOKEN}
+# globally
+{
+	acme_dns godaddy {
+		api_token {env.GODADDY_API_TOKEN}
+	}
 }
 ```
 
-You can replace `{env.GODADDY_TOKEN}` with the actual auth token if you prefer to put it directly in your config instead of an environment variable.
+```
+# one site
+tls {
+  dns godaddy {
+    api_token {env.GODADDY_API_TOKEN}
+  }
+}
+```
+
+You can replace `{env.GODADDY_API_TOKEN}` with the actual auth token if you prefer to put it directly in your config instead of an environment variable.
 
 ## Authenticating
 
