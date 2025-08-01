@@ -10,6 +10,8 @@ dns.providers.godaddy
 
 ## Config examples
 
+`api_token` should be in the format `<GODADDY_API_KEY>:<GODADDY_API_SECRET>`. You can obtain these credentials from your GoDaddy account.
+
 To use this module for the ACME DNS challenge, [configure the ACME issuer in your Caddy JSON](https://caddyserver.com/docs/json/apps/tls/automation/policies/issuer/acme/) like so:
 
 ```

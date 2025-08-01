@@ -32,7 +32,7 @@ func (p *Provider) Provision(ctx caddy.Context) error {
 // UnmarshalCaddyfile sets up the DNS provider from Caddyfile tokens. Syntax:
 //
 //	godaddy {
-//	    api_token <api_token>
+//	    api_token <GODADDY_API_KEY:GODADDY_API_SECRET>
 //	}
 func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
