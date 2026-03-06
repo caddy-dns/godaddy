@@ -33,14 +33,20 @@ or with the Caddyfile:
 ```
 # globally
 {
-	acme_dns godaddy {
-		api_token {env.GODADDY_API_TOKEN}
-	}
+	acme_dns godaddy {env.GODADDY_API_TOKEN}
 }
 ```
 
 ```
 # one site
+tls {
+  dns godaddy {env.GODADDY_API_TOKEN}
+}
+```
+
+The block syntax with an explicit subdirective is also supported:
+
+```
 tls {
   dns godaddy {
     api_token {env.GODADDY_API_TOKEN}

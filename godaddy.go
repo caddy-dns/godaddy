@@ -31,17 +31,23 @@ func (p *Provider) Provision(ctx caddy.Context) error {
 
 // UnmarshalCaddyfile sets up the DNS provider from Caddyfile tokens. Syntax:
 //
-//	godaddy {
+//	godaddy [<api_token>] {
 //	    api_token <GODADDY_API_KEY:GODADDY_API_SECRET>
 //	}
 func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
+		if d.NextArg() {
+			p.Provider.APIToken = d.Val()
+		}
 		if d.NextArg() {
 			return d.ArgErr()
 		}
 		for nesting := d.Nesting(); d.NextBlock(nesting); {
 			switch d.Val() {
 			case "api_token":
+				if p.Provider.APIToken != "" {
+					return d.Err("API token already set")
+				}
 				if d.NextArg() {
 					p.Provider.APIToken = d.Val()
 				}
@@ -54,7 +60,7 @@ func (p *Provider) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 		}
 	}
 	if p.Provider.APIToken == "" {
-		return d.Err("missing api_token")
+		return d.Err("missing API token")
 	}
 	return nil
 }
